@@ -81,7 +81,6 @@
 * add power seq api for ulps
 */
 #include <soc/oppo/oppo_project.h>
-#include <linux/oppo_mm_kevent_fb.h>
 #endif /*VENDOR_EDIT*/
 /* For abnormal check */
 #ifdef VENDOR_EDIT
@@ -503,10 +502,6 @@ static int primary_display_check_recovery_worker_kthread(void *data)
 	int i = 0;
 	int esd_try_cnt = 5;
 	int recovery_done = 0;
-	#ifdef VENDOR_EDIT
-	unsigned char payload[100] = "";
-	#endif
-
 	DISPFUNC();
 	sched_setscheduler(current, SCHED_RR, &param);
 
@@ -566,9 +561,12 @@ static int primary_display_check_recovery_worker_kthread(void *data)
 				i);
 			primary_display_esd_recovery();
 			#ifdef VENDOR_EDIT
+<<<<<<< HEAD
 			scnprintf(payload, sizeof(payload), "EventID@@%d$$panel_name@@%s$$ReportLevel@@%d",
 				OPPO_MM_DIRVER_FB_EVENT_ID_ESD,primary_get_lcm()->drv->name,OPPO_MM_DIRVER_FB_EVENT_REPORTLEVEL_HIGH);
 			upload_mm_kevent_fb_data(OPPO_MM_DIRVER_FB_EVENT_MODULE_DISPLAY,payload);
+=======
+>>>>>>> d2a6c6d5974d (treewide: Drop oppo kevent upload/feedback crap)
 			/*
 			* add for esd recovery
 			*/

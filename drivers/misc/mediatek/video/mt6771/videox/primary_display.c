@@ -108,7 +108,6 @@
 */
 #include <soc/oppo/oppo_project.h>
 #include <linux/leds.h>
-#include <linux/oppo_mm_kevent_fb.h>
 #include <linux/time.h>
 #include <linux/timekeeping.h>
 #include <linux/jiffies.h>
@@ -5533,9 +5532,12 @@ int force_back_to_full_roi(void)
 int primary_display_suspend(void)
 {
 	enum DISP_STATUS ret = DISP_STATUS_OK;
+<<<<<<< HEAD
 	#ifdef VENDOR_EDIT
 	unsigned char payload[100] = "";
 	#endif
+=======
+>>>>>>> d2a6c6d5974d (treewide: Drop oppo kevent upload/feedback crap)
 
 	DISPCHECK("%s begin\n", __func__);
 

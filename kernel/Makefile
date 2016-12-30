@@ -65,12 +65,6 @@ obj-y += livepatch/
 #ifdef VENDOR_EDIT
 #ifdef HANG_OPPO_ALL
 obj-$(CONFIG_HANG_OPPO_ALL) += op_panic_recovery.o
-
-obj-$(CONFIG_OPPO_KEVENT_UPLOAD) += oppo_kevent_upload.o
-obj-$(CONFIG_OPPO_KEVENT_TEST) += oppo_kevent_test.o
-
-
-
 obj-$(CONFIG_CHECKPOINT_RESTORE) += kcmp.o
 obj-$(CONFIG_FREEZER) += freezer.o
 obj-$(CONFIG_PROFILING) += profile.o
