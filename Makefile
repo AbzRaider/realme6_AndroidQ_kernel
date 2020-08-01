@@ -757,6 +757,29 @@ KBUILD_CFLAGS	+= -mcpu=cortex-a55 -mtune=cortex-a55
 endif
 endif
 endif
+endif
+
+KBUILD_CFLAGS += $(call cc-ifversion, -lt, 0409, \
+			$(call cc-disable-warning,maybe-uninitialized,))
+
+ifeq ($(cc-name),clang)
+KBUILD_CFLAGS   += -mcpu=cortex-a55 -mtune=cortex-a55
+endif
+
+ifeq ($(cc-name),gcc)
+KBUILD_CFLAGS   += -mcpu=cortex-a76.cortex-a55 -mtune=cortex-a76.cortex-a55
+endif
+
+KBUILD_CFLAGS += $(call cc-ifversion, -gt, 0900, \
+			$(call cc-option, -Wno-psabi) \
+			$(call cc-disable-warning,maybe-uninitialized,) \
+			$(call cc-disable-warning,format,) \
+			$(call cc-disable-warning,array-bounds,) \
+			$(call cc-disable-warning,stringop-overflow,))
+
+KBUILD_CFLAGS += $(call cc-ifversion, -lt, 0409, \
+			$(call cc-disable-warning,maybe-uninitialized,))
+>>>>>>> e18ddb648508 (Makefile: optimization for G90T CPU)
 
 # Tell compiler to tune the performance of the code for a specified
 # target processor
