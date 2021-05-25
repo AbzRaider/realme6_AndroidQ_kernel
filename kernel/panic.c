@@ -29,16 +29,11 @@
 #include <linux/bug.h>
 #include <linux/ratelimit.h>
 #include <soc/oppo/oppo_project.h>
-
-#ifdef VENDOR_EDIT
-#include "../../vendor/oppo/oppo_phoenix/kernel/oppo_phoenix/oppo_phoenix.h"
-static int kernel_panic_happened = 0;
-#endif
-
 #define PANIC_TIMER_STEP 100
 #define PANIC_BLINK_SPD 18
 
 #ifdef VENDOR_EDIT
+/* Bin.Li@EXP.BSP.bootloader.bootflow, 2017/05/24, Add for interface reboot reason */
 int is_kernel_panic = 0;
 #endif
 
@@ -170,17 +165,16 @@ void panic(const char *fmt, ...)
 	int old_cpu, this_cpu;
 	bool _crash_kexec_post_notifiers = crash_kexec_post_notifiers;
 
-#ifdef VENDOR_EDIT
-    kernel_panic_happened++;
-	if(phx_set_boot_error && phx_is_phoenix_boot_completed)
-	{
-		// we only care about panic on boot not complete
-		if(kernel_panic_happened < 2 && !phx_is_phoenix_boot_completed())
-		{
-			phx_set_boot_error(ERROR_KERNEL_PANIC);
-		}
+
+	if (panic_on_warn) {
+		/*
+		 * This thread may hit another WARN() in the panic path.
+		 * Resetting this prevents additional WARN() from panicking the
+		 * system on this thread.  Other threads are blocked by the
+		 * panic_mutex in panic().
+		 */
+		panic_on_warn = 0;
 	}
-#endif  /*VENDOR_EDIT*/
 	/*
 	 * Disable local interrupts. This will prevent panic_smp_self_stop
 	 * from deadlocking the first cpu that invokes the panic, since

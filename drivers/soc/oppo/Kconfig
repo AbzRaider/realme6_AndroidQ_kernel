@@ -26,11 +26,3 @@ source "drivers/soc/oppo/oppo_hypnus/Kconfig"
 #ifdef VENDOR_EDIT
 source "drivers/soc/oppo/oppo_healthinfo/Kconfig"
 #endif /* VENDOR_EDIT */
-
-
-source "drivers/soc/oppo/oppo_phoenix/Kconfig"
-#endif /* VENDOR_EDIT */
-
-#ifdef VENDOR_EDIT
-source drivers/soc/oppo/oppo_dump/Kconfig"
-#endif /* VENDOR_EDIT */
