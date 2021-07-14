@@ -274,13 +274,6 @@ else
 scripts/Kbuild.include: ;
 include scripts/Kbuild.include
 
-#ifdef VENDOR_EDIT
-ifeq ($(OPPO_HIGH_TEMP_VERSION),true)
-KBUILD_CFLAGS += -DCONFIG_HIGH_TEMP_VERSION
-KBUILD_CPPFLAGS += -DCONFIG_HIGH_TEMP_VERSION
-endif
-#endif /* VENDOR_EDIT */
-
 
 
 #ifdef VENDOR_EDIT
