@@ -232,9 +232,13 @@ config OPPO_KEVENT_UPLOAD
 	def_bool y
 
 #ifdef VENDOR_EDIT
+<<<<<<< HEAD
 config OPPO_ROOT_CHECK
 	def_bool y
 
+=======
+#Ke.Li@ROM.Security, 2019/09/30, Add for execve blocking(root defence)
+>>>>>>> 7860e02ebbe8 (arm64: kernel: Remove oppo's in-kernel root check)
 config OPPO_EXECVE_BLOCK
 	def_bool y
 
