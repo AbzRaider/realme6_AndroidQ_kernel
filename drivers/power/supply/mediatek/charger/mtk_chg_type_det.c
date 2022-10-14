@@ -50,10 +50,6 @@
 #include "mtk_charger_intf.h"
 
 
-#ifdef VENDOR_EDIT
-#include <linux/oppo_dump.h>
-#endif
-
 void __attribute__((weak)) fg_charger_in_handler(void)
 {
 	pr_notice("%s not defined\n", __func__);
@@ -259,12 +255,6 @@ static int mt_charger_set_property(struct power_supply *psy,
 		return 0;
 	case POWER_SUPPLY_PROP_CHARGE_TYPE:
 		mtk_chg->chg_type = val->intval;
-#ifdef VENDOR_EDIT
-               if (mtk_chg->chg_type == CHARGER_UNKNOWN){
-               } else {
-                   OPPO_DUMP(__func__);
-               }
-#endif /*VENDOR_EDIT*/
 #if defined(VENDOR_EDIT) && defined(CONFIG_OPPO_CHARGER_MT6370_TYPEC)
 		if (battery_psy)
 			power_supply_changed(battery_psy);

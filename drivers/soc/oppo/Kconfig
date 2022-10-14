@@ -26,3 +26,4 @@ source "drivers/soc/oppo/oppo_hypnus/Kconfig"
 #ifdef VENDOR_EDIT
 source "drivers/soc/oppo/oppo_healthinfo/Kconfig"
 #endif /* VENDOR_EDIT */
+

@@ -28,9 +28,6 @@
 #include <linux/mutex.h>
 #include <linux/rcupdate.h>
 #include "input-compat.h"
-#ifdef VENDOR_EDIT
-#include <linux/oppo_dump.h>
-#endif /* VENDOR_EDIT */
 
 MODULE_AUTHOR("Vojtech Pavlik <vojtech@suse.cz>");
 MODULE_DESCRIPTION("Input core");
@@ -374,9 +371,6 @@ static void input_handle_event(struct input_dev *dev,
 {
 	int disposition = input_get_disposition(dev, type, code, &value);
 
-#ifdef VENDOR_EDIT
-	oppo_key_event(type, code, value);
-#endif /* VENDOR_EDIT */
 
 	if (disposition != INPUT_IGNORE_EVENT && type != EV_SYN)
 		add_input_randomness(type, code, value);
