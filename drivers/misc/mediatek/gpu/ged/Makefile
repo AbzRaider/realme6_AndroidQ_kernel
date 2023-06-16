@@ -60,13 +60,10 @@ ifneq (,$(filter $(CONFIG_MTK_PLATFORM), "mt6768" "mt6771"))
 ccflags-y += -DCONFIG_MTK_QOS_V1_SUPPORT
 endif
 
-ifneq ($(CONFIG_MTK_ENG_BUILD),y)
+#Strip out GED Debug by enabling the required flags
 VER:=user
-ifeq ($(CONFIG_EXTREME_LOW_RAM), y)
 ccflags-y += -DGED_LOG_SIZE_LIMITED
 ccflags-y += -DGED_BUFFER_LOG_DISABLE
-endif
-endif
 
 ccflags-y += -DMET_USER_EVENT_SUPPORT
 
