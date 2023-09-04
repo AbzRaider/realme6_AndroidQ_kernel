@@ -26,8 +26,7 @@ source "drivers/soc/oppo/oppo_hypnus/Kconfig"
 #ifdef VENDOR_EDIT
 source "drivers/soc/oppo/oppo_healthinfo/Kconfig"
 #endif /* VENDOR_EDIT */
-#//Wen.Luo@BSP
-source "drivers/soc/oppo/oppo_shutdown_detect/Kconfig"
+
 
 source "drivers/soc/oppo/oppo_phoenix/Kconfig"
 #endif /* VENDOR_EDIT */
