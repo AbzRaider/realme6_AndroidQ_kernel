@@ -16,7 +16,7 @@
 #define NETLINK_SELINUX		7	/* SELinux event notifications */
 #define NETLINK_ISCSI		8	/* Open-iSCSI */
 #define NETLINK_AUDIT		9	/* auditing */
-#define NETLINK_FIB_LOOKUP	10	
+#define NETLINK_FIB_LOOKUP	10
 #define NETLINK_CONNECTOR	11
 #define NETLINK_NETFILTER	12	/* netfilter subsystem */
 #define NETLINK_IP6_FW		13
@@ -29,10 +29,25 @@
 #define NETLINK_RDMA		20
 #define NETLINK_CRYPTO		21	/* Crypto layer */
 #define NETLINK_SMC		22	/* SMC monitoring */
-
+#if defined(VENDOR_EDIT) && defined(CONFIG_OPPO_HANS)
+#define NETLINK_OPPO_HANS       28      /* Socket for freezing solution*/
+#endif
 #define NETLINK_INET_DIAG	NETLINK_SOCK_DIAG
 
-#define MAX_LINKS 32		
+#ifndef VENDOR_EDIT
+//Add for WeChat lucky money recognition
+#define MAX_LINKS 32
+#else /* VENDOR_EDIT */
+#define NETLINK_OPPO_NF_HOOKS	32	/*OPPO netfilter hooks*/
+
+//Add code for appo sla function
+#define NETLINK_OPPO_SLA  33      /*SLA NETLINK SOCK*/
+
+//#ifdef VENDOR_EDIT
+//elsa freeze use netlink_id = max_links - 1
+#define MAX_LINKS 37
+//#endif /* VENDOR_EDIT */
+#endif /* VENDOR_EDIT */
 
 struct sockaddr_nl {
 	__kernel_sa_family_t	nl_family;	/* AF_NETLINK	*/
