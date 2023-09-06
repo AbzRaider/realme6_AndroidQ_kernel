@@ -1,3 +1,4 @@
+
 /*
  *  linux/mm/vmstat.c
  *
@@ -1062,6 +1063,10 @@ const char * const vmstat_text[] = {
 	"numa_other",
 #endif
 
+#ifdef ODM_HQ_EDIT
+	"nr_ioncache_pages",
+#endif /* ODM_HQ_EDIT */
+
 	/* Node-based counters */
 	"nr_inactive_anon",
 	"nr_active_anon",
@@ -1092,7 +1097,6 @@ const char * const vmstat_text[] = {
 	"nr_dirtied",
 	"nr_written",
 	"", /* nr_indirectly_reclaimable */
-
 	/* enum writeback_stat_item counters */
 	"nr_dirty_threshold",
 	"nr_dirty_background_threshold",
@@ -1115,6 +1119,7 @@ const char * const vmstat_text[] = {
 
 	"pgfault",
 	"pgmajfault",
+	"pgfmfault",
 	"pglazyfreed",
 
 	"pgrefill",
@@ -1216,7 +1221,16 @@ const char * const vmstat_text[] = {
 	"swap_ra",
 	"swap_ra_hit",
 #endif
-#endif /* CONFIG_VM_EVENTS_COUNTERS */
+
+#ifdef CONFIG_ZONE_MOVABLE_CMA
+	"zmc_lru_migrated",
+	"zmc_lru_migration_nomem",
+#endif /* CONFIG_ZONE_MOVABLE_CMA */
+
+#ifdef CONFIG_SPECULATIVE_PAGE_FAULT
+	"speculative_pgfault",
+#endif
+#endif /* CONFIG_VM_EVENT_COUNTERS */
 };
 #endif /* CONFIG_PROC_FS || CONFIG_SYSFS || CONFIG_NUMA */
 
