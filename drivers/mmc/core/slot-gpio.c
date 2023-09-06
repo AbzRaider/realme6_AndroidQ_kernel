@@ -30,12 +30,29 @@ struct mmc_gpio {
 	char cd_label[0];
 };
 
+#ifdef ODM_HQ_EDIT
+extern void msdc_sd_power_off_quick(void);
+#endif
+
 static irqreturn_t mmc_gpio_cd_irqt(int irq, void *dev_id)
 {
 	/* Schedule a card detection after a debounce timeout */
 	struct mmc_host *host = dev_id;
 
+#ifdef ODM_HQ_EDIT
+	msdc_sd_power_off_quick();
+#endif
+
 	host->trigger_card_event = true;
+	
+#ifdef VENDOR_EDIT
+        host->detect_change_retry = 5;
+#endif /* VENDOR_EDIT */
+
+#ifdef VENDOR_EDIT
+        host->card_stuck_in_programing_status = false;
+#endif /* VENDOR_EDIT */
+
 	mmc_detect_change(host, msecs_to_jiffies(200));
 
 	return IRQ_HANDLED;
@@ -145,6 +162,8 @@ void mmc_gpiod_request_cd_irq(struct mmc_host *host)
 			ctx->cd_label, host);
 		if (ret < 0)
 			irq = ret;
+		else
+			enable_irq_wake(irq);
 	}
 
 	host->slot.cd_irq = irq;

@@ -54,8 +54,23 @@ static void sdhci_finish_data(struct sdhci_host *);
 
 static void sdhci_enable_preset_value(struct sdhci_host *host, bool enable);
 
+#ifdef VENDOR_EDIT 
+#ifndef CONFIG_OPPO_DAILY_BUILD
+static int flag = 0;
+#endif
+#endif
+
 void sdhci_dumpregs(struct sdhci_host *host)
 {
+#ifdef VENDOR_EDIT 
+#ifndef CONFIG_OPPO_DAILY_BUILD
+	if(!flag)
+		flag++;
+	else
+		return;
+#endif
+#endif
+
 	SDHCI_DUMP("============ SDHCI REGISTER DUMP ===========\n");
 
 	SDHCI_DUMP("Sys addr:  0x%08x | Version:  0x%08x\n",
@@ -1141,6 +1156,16 @@ void sdhci_send_command(struct sdhci_host *host, struct mmc_command *cmd)
 	if ((host->quirks2 & SDHCI_QUIRK2_STOP_WITH_TC) &&
 	    cmd->opcode == MMC_STOP_TRANSMISSION)
 		cmd->flags |= MMC_RSP_BUSY;
+
+#ifdef VENDOR_EDIT
+	if(host->mmc->card_stuck_in_programing_status && ((cmd->opcode == MMC_WRITE_MULTIPLE_BLOCK) || (cmd->opcode == MMC_WRITE_BLOCK)))
+	{
+		pr_info("blocked write cmd:%s\n", mmc_hostname(host->mmc));
+		cmd->error = -EIO;
+		tasklet_schedule(&host->finish_tasklet);
+		return;
+	}
+#endif /* VENDOR_EDIT */
 
 	/* Wait max 10 ms */
 	timeout = 10;

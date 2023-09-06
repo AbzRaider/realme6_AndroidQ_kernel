@@ -59,6 +59,21 @@ obj-$(CONFIG_PCI_ENDPOINT_TEST)	+= pci_endpoint_test.o
 
 obj-$(CONFIG_UID_SYS_STATS)	+= uid_sys_stats.o
 obj-$(CONFIG_MEMORY_STATE_TIME)	+= memory_state_time.o
+obj-$(CONFIG_MEDIATEK_SOLUTION) += mediatek/
+#ifdef ODM_HQ_EDIT
+obj-$(CONFIG_GET_BOARD_ID) 	+= board_id.o
+#endif
+#ifdef ODM_HQ_EDIT
+obj-$(CONFIG_HQ_DEVINFO_SUPPORT) 	+= hqdevinfo/
+#endif
+
+#ifdef VENDOR_EDIT
+obj-y				+= motor.o
+obj-y				+= oppo_motor/
+#endif
+
+obj-y				+= schedx.o
+#endif
 
 lkdtm-$(CONFIG_LKDTM)		+= lkdtm_core.o
 lkdtm-$(CONFIG_LKDTM)		+= lkdtm_bugs.o

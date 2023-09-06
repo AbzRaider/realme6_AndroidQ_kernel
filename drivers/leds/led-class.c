@@ -25,6 +25,13 @@
 
 static struct class *leds_class;
 
+#ifdef VENDOR_EDIT
+/*
+* add for oppo brightness and max_brightness node
+*/
+//extern unsigned long oppo_display_brightness;
+#endif
+
 static ssize_t brightness_show(struct device *dev,
 		struct device_attribute *attr, char *buf)
 {
@@ -61,6 +68,14 @@ static ssize_t brightness_store(struct device *dev,
 	ret = size;
 unlock:
 	mutex_unlock(&led_cdev->led_access);
+
+	#ifdef VENDOR_EDIT
+	/*
+	* add for oppo brightness and max_brightness node
+	*/
+	//oppo_display_brightness = state;
+	#endif
+
 	return ret;
 }
 static DEVICE_ATTR_RW(brightness);

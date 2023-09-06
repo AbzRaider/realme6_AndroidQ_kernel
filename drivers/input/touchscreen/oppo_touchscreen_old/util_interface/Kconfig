@@ -1,0 +1,11 @@
+
+#ifdef VENDOR_EDIT
+
+#config TOUCHPANEL_OPPO
+#	default y
+#	bool "TP Synaptics "
+#	---help---
+#	say Y to enable driver for Touchpanel useing Synaptics_IC
+
+#endif
+
