@@ -453,6 +453,7 @@ KBUILD_LDFLAGS_MODULE := -T $(srctree)/scripts/module-common.lds
 
 GCC_PLUGINS_CFLAGS :=
 CLANG_FLAGS :=
+export TARGET_PRODUCT = full_oppo6785
 TARGET_BUILD_VARIANT := user
 VENDOR_EDIT := 1
 ODM_WT_EDIT := yes
