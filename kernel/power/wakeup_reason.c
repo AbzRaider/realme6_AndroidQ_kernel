@@ -27,6 +27,11 @@
 #include <linux/notifier.h>
 #include <linux/suspend.h>
 
+#define MODEM_WAKEUP_SRC_NUM 10
+extern int data_wakeup_index;
+extern int modem_wakeup_src_count[MODEM_WAKEUP_SRC_NUM];
+extern char modem_wakeup_src_string[MODEM_WAKEUP_SRC_NUM][20];
+extern void modem_clear_wakeupsrc_count(void);
 
 #define MAX_WAKEUP_REASON_IRQS 32
 static int irq_list[MAX_WAKEUP_REASON_IRQS];
@@ -40,7 +45,82 @@ static ktime_t last_monotime; /* monotonic time before last suspend */
 static ktime_t curr_monotime; /* monotonic time after last suspend */
 static ktime_t last_stime; /* monotonic boottime offset before last suspend */
 static ktime_t curr_stime; /* monotonic boottime offset after last suspend */
+#ifdef ODM_HQ_EDIT
+extern u64 alarm_count;
+extern u64 wakeup_source_count_rtc;
+#endif /*ODM_HQ_EDIT*/
 
+#ifdef VENDOR_EDIT
+void wakeup_src_clean(void);
+#endif /* VENDOR_EDIT */
+
+#ifdef ODM_HQ_EDIT
+static ssize_t ap_resume_reason_stastics_show(struct kobject *kobj, struct kobj_attribute *attr,
+		char *buf)
+{
+	int buf_offset = 0;
+
+	buf_offset += sprintf(buf + buf_offset,"INT_RTC");
+	buf_offset += sprintf(buf + buf_offset,  "%s",":");
+	buf_offset += sprintf(buf + buf_offset,  "%lld \n",wakeup_source_count_rtc);
+	printk(KERN_WARNING "%s wakeup %lld times\n","INT_RTC",wakeup_source_count_rtc);
+
+	return buf_offset;
+}
+//echo reset >   /sys/kernel/wakeup_reasons/wakeup_stastisc_reset
+static ssize_t  wakeup_stastisc_reset_store(struct kobject *kobj,
+		struct kobj_attribute *attr, const char *buf, size_t count)
+{
+	char reset_string[]="reset";
+	if(!((count == strlen(reset_string)) || ((count == strlen(reset_string) + 1) && (buf[count-1] == '\n')))) {
+		return count;
+       }
+
+	if (strncmp(buf, reset_string, strlen(reset_string)) != 0) {
+		return count;
+       }
+
+	wakeup_src_clean();
+	return count;
+}
+static struct kobj_attribute ap_resume_reason_stastics = __ATTR_RO(ap_resume_reason_stastics);
+static struct kobj_attribute wakeup_stastisc_reset_sys =
+	__ATTR(wakeup_stastisc_reset, S_IWUSR|S_IRUGO, NULL, wakeup_stastisc_reset_store);
+#endif /*ODM_HQ_EDIT*/
+
+static ssize_t modem_resume_reason_stastics_show(struct kobject *kobj, struct kobj_attribute *attr,
+        char *buf)
+{
+        int max_wakeup_src_count = 0;
+        int max_wakeup_src_index = 0;
+        int i, total = 0;
+        int temp_d = 0;
+
+        for(i = 0; i < MODEM_WAKEUP_SRC_NUM; i++)
+        {
+            total += modem_wakeup_src_count[i];
+            printk(KERN_WARNING "%s wakeup %d times, total %d times\n",
+                    modem_wakeup_src_string[i],modem_wakeup_src_count[i],total);
+            if (i == data_wakeup_index)
+            {
+                temp_d = modem_wakeup_src_count[i] + (modem_wakeup_src_count[i]>>1);
+                printk(KERN_WARNING "%s wakeup real %d times, count %d times\n",
+                             modem_wakeup_src_string[i],modem_wakeup_src_count[i],temp_d);
+                if(temp_d > max_wakeup_src_count){
+                    max_wakeup_src_index = i;
+                    max_wakeup_src_count = temp_d;
+                }
+            }
+            else if (modem_wakeup_src_count[i] > max_wakeup_src_count)
+            {
+                max_wakeup_src_index = i;
+                max_wakeup_src_count = modem_wakeup_src_count[i];
+            }
+        }
+        return sprintf(buf, "%s:%d:%d\n", modem_wakeup_src_string[max_wakeup_src_index], max_wakeup_src_count, total);
+}
+
+static struct kobj_attribute modem_resume_reason_stastics = __ATTR_RO(modem_resume_reason_stastics);
 static ssize_t last_resume_reason_show(struct kobject *kobj, struct kobj_attribute *attr,
 		char *buf)
 {
@@ -97,7 +177,12 @@ static struct kobj_attribute suspend_time = __ATTR_RO(last_suspend_time);
 
 static struct attribute *attrs[] = {
 	&resume_reason.attr,
+    &modem_resume_reason_stastics.attr,
 	&suspend_time.attr,
+#ifdef ODM_HQ_EDIT
+	&ap_resume_reason_stastics.attr,
+	&wakeup_stastisc_reset_sys.attr,
+#endif /*ODM_HQ_EDIT*/
 	NULL,
 };
 static struct attribute_group attr_group = {
@@ -195,6 +280,18 @@ static struct notifier_block wakeup_reason_pm_notifier_block = {
 	.notifier_call = wakeup_reason_pm_event,
 };
 
+#ifdef VENDOR_EDIT
+void wakeup_src_clean(void)
+{
+#ifdef ODM_HQ_EDIT
+	alarm_count = 0;
+	wakeup_source_count_rtc = 0;
+#endif /*ODM_HQ_EDIT*/
+
+    modem_clear_wakeupsrc_count();
+}
+EXPORT_SYMBOL(wakeup_src_clean);
+#endif /* VENDOR_EDIT */
 /* Initializes the sysfs parameter
  * registers the pm_event notifier
  */

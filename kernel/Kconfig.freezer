@@ -1,2 +1,8 @@
 config FREEZER
 	def_bool PM_SLEEP || CGROUP_FREEZER
+
+#ifdef VENDOR_EDIT
+config ELSA_STUB
+	bool "Enable ELSA stub in kernel"
+	default n
+#endif
