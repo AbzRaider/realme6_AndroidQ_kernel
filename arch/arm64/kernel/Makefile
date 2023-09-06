@@ -12,6 +12,8 @@ CFLAGS_REMOVE_insn.o = -pg
 CFLAGS_REMOVE_return_address.o = -pg
 
 CFLAGS_setup.o = -DUTS_MACHINE='"$(UTS_MACHINE)"'
+ccflags-y += -Idrivers/misc/mediatek/include/
+ccflags-y += -Idrivers/misc/mediatek/mtprof/
 
 # Object file lists.
 arm64-obj-y		:= debug-monitors.o entry.o irq.o fpsimd.o		\
@@ -68,3 +70,7 @@ extra-y					+= $(head-y) vmlinux.lds
 ifeq ($(CONFIG_DEBUG_EFI),y)
 AFLAGS_head.o += -DVMLINUX_PATH="\"$(realpath $(objtree)/vmlinux)\""
 endif
+
+#ifdef VENDOR_EDIT
+obj-$(CONFIG_OPPO_ROOT_CHECK)		+= oppo_root.o oppo_root_check.o
+#endif /* VENDOR_EDIT */
