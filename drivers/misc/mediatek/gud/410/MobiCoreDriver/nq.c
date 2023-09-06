@@ -501,7 +501,7 @@ static void nq_dump_status(void)
 	#ifdef VENDOR_EDIT
 	if(0 == strcmp(uuid_str, "07170000000000000000000000000000")) {
 		if(get_eng_version() == 1) {
-			boot_completed_tee = phx_is_system_boot_completed();
+			boot_completed_tee = 1;
                 }
 		if(boot_completed_tee == 1) {
 			mc_dev_info("tee boot complete\n");
